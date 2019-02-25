@@ -1,0 +1,95 @@
+<div *ngIf="false">
+  <h1 mat-dialog-title>Choose Login Method</h1>
+
+  <mat-dialog-actions class="flex-container" fxLayout="column" fxLayoutAlign="space-around">
+    <button class="flex-item" mat-raised-button mat-dialog-close color="primary" (click)="googleLogin()">Google</button>
+    <button class="flex-item" mat-raised-button mat-dialog-close color="primary" (click)="fbLogin()">facebook</button>
+    <button class="flex-item" mat-raised-button mat-dialog-close color="primary" (click)="twitterLogin()">Twitter</button>
+    <button class="flex-item" mat-raised-button mat-dialog-close color="primary" (click)="githubLogin()">Github</button>
+    <button class="flex-item" mat-raised-button mat-dialog-close color="primary" (click)="passwordLogin()">Email/Password</button>
+  </mat-dialog-actions>
+
+  <mat-dialog-actions>
+    <button mat-dialog-close>Cancel</button>
+  </mat-dialog-actions>
+</div>
+
+<mat-dialog-content>
+  <div class="logininner textleft">
+    <div class="card">
+      <div class="row">
+        <div class="col-sm-7 col-xs-12">
+          <form (ngSubmit)="onSubmit()" class="sign-in-form" [formGroup]="loginForm" novalidate>
+            <input type="hidden" formControlName="mode"  aria-label="hidden">
+            <div class="heading" [ngSwitch]="mode">
+              <span *ngSwitchCase="0">Login to your account</span>
+              <span *ngSwitchCase="1">Get a bit wiser - Sign up</span>
+              <span *ngSwitchCase="2">Forgot Password</span>
+            </div>
+            <div class="auth-msg" [ngClass]="{'error':errorStatus, 'success':!errorStatus}">
+              <label>
+                {{notificationMsg}}
+              </label>
+            </div>
+            <mat-form-field class="
+              full-width required">
+              <input [stlShowHintWhenFocusOut]="{hintRef: emailHint, controlRef:loginForm.controls.email, removeClass: 'error'}"  matInput placeholder="Email *" formControlName="email" class="required" aria-label="email">
+              <mat-hint  #emailHint align="end" class="error">Invalid
+                Email!
+              </mat-hint>
+            </mat-form-field>
+            <mat-form-field *ngIf="mode !== 2" class="full-width required">
+              <input [stlShowHintWhenFocusOut]="{hintRef: passwordHint, controlRef:loginForm.controls.password, removeClass: 'error'}" type="password" matInput placeholder="Password *" class="required" formControlName="password"
+                aria-label="password">
+              <mat-hint #passwordHint align="end"
+                class="error">Password must be atleast 6 characters</mat-hint>
+            </mat-form-field>
+            <mat-form-field *ngIf="mode === 1" class="full-width required">
+              <input [stlShowHintWhenFocusOut]="{hintRef: confPasswordHint, controlRef:loginForm.controls.confirmPassword, removeClass: 'error'}"  type="password" matInput placeholder="Confirm Password *" class="required" formControlName="confirmPassword"
+                aria-label="confirm-password">
+              <mat-hint #confPasswordHint
+                class="error" [align]="end">
+                Confirm Password must be atleast 6 characters
+              </mat-hint>
+              <mat-hint class="error" [align]="end" *ngIf="loginForm.controls.password.valid && loginForm.controls.confirmPassword.valid && loginForm.hasError('passwordmismatch')">
+                  Must match Password
+             </mat-hint>
+            </mat-form-field>
+            <ng-container [ngSwitch]="mode">
+              <ng-container *ngSwitchCase="0">
+                <div class="formfield">
+                  <label>
+                    <input type="checkbox" name="">Keep me logged in
+                  </label>
+                </div>
+                <button mat-raised-button class="auth-btn" [ngClass]="{'active-btn': loginForm.valid, 'disabled-btn': !loginForm.valid}"
+                  type="submit" [disabled]="!loginForm.valid">Login</button>
+                <div class="row loginlink">
+                  <div class="col-xs-6"><a (click)="this.changeMode(2)" title="Forgot Password?">Forgot Password?</a></div>
+                  <div class="col-xs-6 textrigth"><a (click)="this.changeMode(1)" title="New Signup">New Signup</a></div>
+                </div>
+              </ng-container>
+              <ng-container *ngSwitchCase="1">
+                <button mat-raised-button class="auth-btn" [ngClass]="{'active-btn': loginForm.valid, 'disabled-btn': !loginForm.valid}"
+                  type="submit" [disabled]="!loginForm.valid">Sign Up</button>
+                <div class="signupfree">by clicking "Sign Up" I agree to bitWiser's Terms & Conditions</div>
+                <div class="textcenter loginlink"><a (click)="this.changeMode(0)" title="Login">Already have an account?
+                    Login</a></div>
+              </ng-container>
+              <ng-container *ngSwitchCase="2">
+                <button mat-raised-button class="auth-btn" type="submit" [ngClass]="{'active-btn': loginForm.valid, 'disabled-btn': !loginForm.valid}"
+                  [disabled]="!loginForm.valid || validateLogs()">Forgot Password</button>
+                <div class="textcenter loginlink"><a (click)="this.changeMode(0)" title="Login">No. I remember it now!</a></div>
+              </ng-container>
+            </ng-container>
+          </form>
+        </div>
+        <div class="col-sm-5 col-xs-12 withsocial">
+          <h3>You can also login with your social account</h3>
+          <a (click)="fbLogin()"><img src="/assets/images/faceboockbtn.png" alt="facebook" /></a>
+          <a (click)="googleLogin()"><img src="/assets/images/gpulsebtn.png" alt="Google Plus" /></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
